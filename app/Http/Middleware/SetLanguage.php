@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class SetLanguage
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        // Check if the request contains a 'lang' parameter
+        $language = $request->header('Accept-Language');
+
+        // Set the application language
+        if ($language && in_array($language, ['en', 'ar'])) {
+            app()->setLocale($language);
+        } else {
+            // If no language preference is set or an invalid language is provided, default to English
+            app()->setLocale('en');
+        }
+
+        return $next($request);
+    }
+ }
+
+
